@@ -1,10 +1,11 @@
-const express = require('express')
-const movies = require('./movies.json')
-const crypto = require('node:crypto')
-const { validateMovie, validatePartialMovie } = require('./Schemas/movies')
+import express, { json } from 'express'
+import movies from './movies.json' with { type: 'json' }
+import { randomUUID } from 'node:crypto'
+import { validateMovie, validatePartialMovie } from './Schemas/movies.js'
+import assert from 'node:assert'
 const app = express()
 const PORT = process.env.PORT ?? 1234
-app.use(express.json())
+app.use(json())
 app.disable('x-powered-by')
 
 app.get('/', (req, res) => res.send('Hello World!'))
@@ -57,7 +58,7 @@ app.post('/movies', (req, res) => {
     return res.json({ error: JSON.parse(result.error.message) })
   }
   const newMovie = {
-    id: crypto.randomUUID(),
+    id: randomUUID(),
     ...result.data
   }
   // esto no seria rest porque lo estamos guardando en memoria
